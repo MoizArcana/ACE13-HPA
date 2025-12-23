@@ -40,7 +40,7 @@ pipeline {
 
         stage('Create Namespace') {
             steps {
-                echo "Creating PROD namespace..."
+                echo "Creating prod namespace..."
                 sh '/snap/bin/kubectl apply -f namespace.yaml'
                 sh '/snap/bin/kubectl get ns'
             }
@@ -53,12 +53,12 @@ pipeline {
                 sh '/snap/bin/kubectl apply -f hpa.yaml'
 
                 echo "Verify deployment and pods:"
-                sh '/snap/bin/kubectl get all -n PROD'
-                sh '/snap/bin/kubectl describe deployment ace-deployment -n PROD'
+                sh '/snap/bin/kubectl get all -n prod'
+                sh '/snap/bin/kubectl describe deployment ace-deployment -n prod'
 
                 echo "Verify HPA status:"
-                sh '/snap/bin/kubectl get hpa -n PROD'
-                sh '/snap/bin/kubectl describe hpa ace-hpa -n PROD'
+                sh '/snap/bin/kubectl get hpa -n prod'
+                sh '/snap/bin/kubectl describe hpa ace-hpa -n prod'
             }
         }
 
@@ -71,7 +71,7 @@ pipeline {
                 kind: Service
                 metadata:
                   name: ace-nodeport
-                  namespace: PROD
+                  namespace: prod
                 spec:
                   type: NodePort
                   selector:
@@ -91,8 +91,8 @@ pipeline {
             steps {
                 echo "Check pod logs (first 50 lines) for ACE container:"
                 sh '''
-                POD=$(/snap/bin/kubectl get pods -n PROD -l app=ace -o jsonpath="{.items[0].metadata.name}")
-                /snap/bin/kubectl logs -n PROD $POD --tail=50
+                POD=$(/snap/bin/kubectl get pods -n prod -l app=ace -o jsonpath="{.items[0].metadata.name}")
+                /snap/bin/kubectl logs -n prod $POD --tail=50
                 '''
             }
         }
