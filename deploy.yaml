@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ace-deployment
+  namespace: PROD
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ace
+  template:
+    metadata:
+      labels:
+        app: ace
+    spec:
+      containers:
+      - name: ace
+        image: moiz3388/ace13
+        ports:
+        - containerPort: 7600
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "500m"
+

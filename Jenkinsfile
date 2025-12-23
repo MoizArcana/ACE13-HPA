@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = "${env.HOME}/.kube/config"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'YOUR_GITHUB_REPO_URL'
+            }
+        }
+
+        stage('Create Namespace') {
+            steps {
+                sh 'kubectl apply -f namespace.yaml'
+            }
+        }
+
+        stage('Deploy ACE') {
+            steps {
+                sh '''
+                kubectl apply -f deployment.yaml
+                kubectl apply -f hpa.yaml
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                kubectl get all -n PROD
+                kubectl get hpa -n PROD
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ ACE deployed successfully with HPA enabled'
+        }
+        failure {
+            echo '❌ Deployment failed'
+        }
+    }
+}
+
