@@ -4,31 +4,37 @@ pipeline {
     environment {
         # Jenkins user kubeconfig
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
-        # Add snap kubectl path
+        # Add snap kubectl path so Jenkins can find it
         PATH = "/snap/bin:${env.PATH}"
     }
 
     stages {
 
-        stage('Debug Environment') {
+        stage('Workspace Debug') {
             steps {
-                echo "Running as user:"
-                sh 'whoami'
-                echo "PATH environment:"
-                sh 'echo $PATH'
-                echo "Check kubectl version:"
-                sh 'which kubectl'
-                sh 'kubectl version --client'
-                echo "Check nodes in cluster:"
-                sh '/snap/bin/kubectl get nodes -o wide'
-                echo "Kubeconfig path:"
-                sh 'ls -l $KUBECONFIG'
+                echo "Check current workspace and files:"
+                sh 'pwd'
+                sh 'ls -al'
             }
         }
 
-        stage('Checkout Git') {
+        stage('Environment Debug') {
             steps {
-                git branch: 'main', url: 'https://github.com/MoizArcana/ACE13-HPA.git'
+                echo "Running as user:"
+                sh 'whoami'
+                
+                echo "PATH environment:"
+                sh 'echo $PATH'
+                
+                echo "Check kubectl version:"
+                sh 'which kubectl'
+                sh 'kubectl version --client'
+                
+                echo "Check nodes in cluster:"
+                sh '/snap/bin/kubectl get nodes -o wide'
+                
+                echo "Kubeconfig path:"
+                sh 'ls -l $KUBECONFIG'
             }
         }
 
@@ -83,7 +89,7 @@ pipeline {
 
         stage('Verify ACE Pod') {
             steps {
-                echo "Check pod logs (first 50 lines) for ace container:"
+                echo "Check pod logs (first 50 lines) for ACE container:"
                 sh '''
                 POD=$(/snap/bin/kubectl get pods -n PROD -l app=ace -o jsonpath="{.items[0].metadata.name}")
                 /snap/bin/kubectl logs -n PROD $POD --tail=50
