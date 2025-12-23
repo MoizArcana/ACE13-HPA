@@ -4,16 +4,17 @@ pipeline {
     environment {
         KUBECONFIG = "${env.HOME}/.kube/config"
     }
-    
-    stage('Kubectl Debug') {
-        steps {
-          sh 'whoami'
-          sh 'kubectl version --client'
-          sh 'kubectl get nodes'
-        }
-       }
 
     stages {
+
+        stage('Kubectl Debug') {
+            steps {
+                sh 'whoami'
+                sh 'kubectl version --client'
+                sh 'kubectl get nodes'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -44,7 +45,8 @@ pipeline {
                 '''
             }
         }
-    }
+
+    } // end of stages
 
     post {
         success {
@@ -55,4 +57,3 @@ pipeline {
         }
     }
 }
-
