@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ace-hpa
-  namespace: PROD
+  namespace: prod
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
