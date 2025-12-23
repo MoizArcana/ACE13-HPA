@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        # Jenkins user kubeconfig
+        // Jenkins user kubeconfig
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
-        # Add snap kubectl path so Jenkins can find it
+        // Add snap kubectl path so Jenkins can find it
         PATH = "/snap/bin:${env.PATH}"
     }
 
