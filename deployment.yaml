@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ace
-        image: moiz3388/ace13
+        image: moiz3388/ace13:latest
         ports:
         - containerPort: 7600
         resources:
