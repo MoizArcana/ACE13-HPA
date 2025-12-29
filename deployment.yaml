@@ -14,9 +14,16 @@ spec:
         app: ace
     spec:
       imagePullSecrets:
-        - name: dockerhub-secret   # 👈 REQUIRED
+        - name: dockerhub-secret   # Required for private Docker Hub image
       containers:
         - name: ace
           image: moiz3388/ace13:latest
           ports:
             - containerPort: 7600
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

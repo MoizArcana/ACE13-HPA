@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // Jenkins user kubeconfig
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
-        // Add snap kubectl path so Jenkins can find it
         PATH = "/snap/bin:${env.PATH}"
     }
 
@@ -22,17 +20,17 @@ pipeline {
             steps {
                 echo "Running as user:"
                 sh 'whoami'
-                
+
                 echo "PATH environment:"
                 sh 'echo $PATH'
-                
+
                 echo "Check kubectl version:"
                 sh 'which kubectl'
                 sh 'kubectl version --client'
-                
+
                 echo "Check nodes in cluster:"
                 sh '/snap/bin/kubectl get nodes -o wide'
-                
+
                 echo "Kubeconfig path:"
                 sh 'ls -l $KUBECONFIG'
             }
@@ -66,22 +64,22 @@ pipeline {
             steps {
                 echo "Exposing ACE pod via NodePort..."
                 sh '''
-                cat <<EOF | /snap/bin/kubectl apply -f -
-                apiVersion: v1
-                kind: Service
-                metadata:
-                  name: ace-nodeport
-                  namespace: prod
-                spec:
-                  type: NodePort
-                  selector:
-                    app: ace
-                  ports:
-                    - protocol: TCP
-                      port: 7600
-                      targetPort: 7600
-                      nodePort: 30060
-                EOF
+cat <<EOF | /snap/bin/kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: ace-nodeport
+  namespace: prod
+spec:
+  type: NodePort
+  selector:
+    app: ace
+  ports:
+    - protocol: TCP
+      port: 7600
+      targetPort: 7600
+      nodePort: 30060
+EOF
                 '''
                 echo "NodePort service created. Access ACE at: http://<minikube_ip>:30060"
             }
@@ -91,8 +89,8 @@ pipeline {
             steps {
                 echo "Check pod logs (first 50 lines) for ACE container:"
                 sh '''
-                POD=$(/snap/bin/kubectl get pods -n prod -l app=ace -o jsonpath="{.items[0].metadata.name}")
-                /snap/bin/kubectl logs -n prod $POD --tail=50
+POD=$(/snap/bin/kubectl get pods -n prod -l app=ace -o jsonpath="{.items[0].metadata.name}")
+/snap/bin/kubectl logs -n prod $POD --tail=50
                 '''
             }
         }
@@ -108,4 +106,3 @@ pipeline {
         }
     }
 }
-
