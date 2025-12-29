@@ -13,14 +13,10 @@ spec:
       labels:
         app: ace
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret   # 👈 REQUIRED
       containers:
-      - name: ace
-        image: moiz3388/ace13:latest
-        ports:
-        - containerPort: 7600
-        resources:
-          requests:
-            cpu: "100m"
-          limits:
-            cpu: "500m"
-
+        - name: ace
+          image: moiz3388/ace13:latest
+          ports:
+            - containerPort: 7600
